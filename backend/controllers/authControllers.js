@@ -8,7 +8,6 @@ const generateToken = (id)=>{
     return token;
 }
 
-console.log("JWT_SECRET:", process.env.JWT_SECRET);
 
 export const registerUser = async(req,res)=>{
     try{
