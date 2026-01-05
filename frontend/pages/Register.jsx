@@ -5,8 +5,10 @@ import Input from "../components/Input";
 import Button from "../components/Button";
 import AuthLayout from "../layouts/AuthLayout";
 import { register} from "../services/authServices.js";
+import {useAuth} from "../context/AuthContext.jsx";
 
 const Register = () => {
+  const {login: authLogin} = useAuth();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     userName: "",
@@ -21,16 +23,10 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    /*if (formData.password !== formData.confirmPassword) {
-      return toast.error("Passwords do not match");
-    }*/
-
     try {
       setLoading(true);
       const res = await register(formData);
-
-      localStorage.setItem("token", res.data.token);
+      authLogin(res.data.token);
       toast.success("Registration successful 🎉");
 
       navigate("/dashboard");
@@ -51,13 +47,6 @@ const Register = () => {
         <Input label="Username" name="userName" onChange={handleChange} />
         <Input label="Email" type="email" name="email" onChange={handleChange} />
         <Input label="Password" type="password" name="password" onChange={handleChange} />
-        {/*<Input
-          label="Confirm Password"
-          type="password"
-          name="confirmPassword"
-          onChange={handleChange}
-        />*/}
-
         <Button disabled={loading}>
           {loading ? "Creating..." : "Create Account"}
         </Button>

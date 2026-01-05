@@ -5,9 +5,11 @@ import Input from "../components/Input";
 import Button from "../components/Button";
 import AuthLayout from "../layouts/AuthLayout";
 import { login } from "../services/authServices.js";
+import { useAuth } from "../context/AuthContext.jsx";
 
 const Login = () => {
-    const navigate = useNavigate();
+  const { login: authLogin } = useAuth();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -24,10 +26,8 @@ const Login = () => {
     try {
       setLoading(true);
       const res = await login(formData);
-
-      localStorage.setItem("token", res.data.token);
+      authLogin(res.data.token);
       toast.success("Login successful 🚀");
-
      navigate("/dashboard");
     } catch (err) {
       toast.error(err.response?.data?.error || "Login failed");
