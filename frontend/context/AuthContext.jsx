@@ -1,19 +1,30 @@
 import { createContext,useState,useEffect,useContext } from "react";
-
+import { getMe } from "../services/authServices.js";
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({children}) => {
+    const [user,setUser] = useState(null);
     const [token,setToken] = useState(null);
     const [loading,setLoading] = useState(true);
     const [isAuthenticated,setIsAuthenticated] = useState(false);
 
     useEffect(()=>{
         const storedToken = localStorage.getItem("token");
-        if(storedToken){
-            setToken(storedToken);
-            setIsAuthenticated(true);
+        if(!storedToken){
+            setLoading(false);
+            return;
         }
-        setLoading(false);
+        setToken(storedToken);
+        getMe()
+      .then((res) => {
+        setUser(res.data.user);
+        setIsAuthenticated(true);
+      })
+      .catch(() => {
+        localStorage.removeItem("token");
+        setIsAuthenticated(false);
+      })
+      .finally(() => setLoading(false));
     },[]);
 
     const login = (token)=>{
@@ -29,7 +40,7 @@ export const AuthProvider = ({children}) => {
     }
 
     return(
-        <AuthContext.Provider value={{token,isAuthenticated,loading,login,logout}}>
+        <AuthContext.Provider value={{user,token,isAuthenticated,loading,login,logout}}>
             {children}
         </AuthContext.Provider>
     )

@@ -1,7 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+
 const Dashboard = () => {
-  const {logout} = useAuth();
+  const {logout,user} = useAuth();
   const navigate = useNavigate();
   const handleLogout = () => {
     logout();
@@ -27,7 +28,7 @@ const Dashboard = () => {
         </div>
 
         <p className="mt-4 text-slate-600">
-          Welcome! You are successfully logged in.
+          Welcome, <span className="font-semibold">{user?.userName}</span>.
         </p>
 
         <div className="mt-6 border-t pt-4">
