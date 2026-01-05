@@ -1,39 +1,69 @@
+import {useNavigate} from "react-router-dom";
+import { useState } from "react";
+import toast from "react-hot-toast";
 import Input from "../components/Input";
 import Button from "../components/Button";
 import AuthLayout from "../layouts/AuthLayout";
-import { useState } from "react";
+import { register} from "../services/authServices.js";
 
-const Register = ()=>{
-    const [userName,setUserName] = useState('');
-    const [email,setEmail] = useState('');
-    const [password,setPassword] = useState('');
-    return(
-        <AuthLayout>
-            <h2 className="font-bold text-center text-2xl mb-6">Create An Account</h2>
-            <form className="space-y-4">
-                <Input label="Name" 
-                type="text" 
-                value={userName}
-                onChange={(e)=>setUserName(e.target.value)}
-                placeholder="Name : "
-                />
-                <Input 
-                label="Email" 
-                type="email"
-                value={email}
-                onChange = {(e)=> setEmail(e.target.value)}
-                placeholder = "you@example.com"
-                />
-                <Input 
-                label="Password"
-                type="password"
-                value = {password}
-                onChange = {(e)=> setPassword(e.target.value)}
-                placeholder = "********"
-                 />
-                <Button >Register</Button>
-            </form>
-        </AuthLayout>
-    )
-}
+const Register = () => {
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    userName: "",
+    email: "",
+    password: "",
+  });
+  const [loading, setLoading] = useState(false);
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    /*if (formData.password !== formData.confirmPassword) {
+      return toast.error("Passwords do not match");
+    }*/
+
+    try {
+      setLoading(true);
+      const res = await register(formData);
+
+      localStorage.setItem("token", res.data.token);
+      toast.success("Registration successful 🎉");
+
+      navigate("/dashboard");
+    } catch (err) {
+      toast.error(err.response?.data?.error || "Registration failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <AuthLayout>
+      <h2 className="text-2xl font-bold text-center mb-6">
+        Create Account
+      </h2>
+
+      <form className="space-y-4" onSubmit={handleSubmit}>
+        <Input label="Username" name="userName" onChange={handleChange} />
+        <Input label="Email" type="email" name="email" onChange={handleChange} />
+        <Input label="Password" type="password" name="password" onChange={handleChange} />
+        {/*<Input
+          label="Confirm Password"
+          type="password"
+          name="confirmPassword"
+          onChange={handleChange}
+        />*/}
+
+        <Button disabled={loading}>
+          {loading ? "Creating..." : "Create Account"}
+        </Button>
+      </form>
+    </AuthLayout>
+  );
+};
+
 export default Register;
