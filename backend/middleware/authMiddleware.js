@@ -18,7 +18,6 @@ const protect = async(req,res,next)=>{
                     error : "User not found"
                 })
             }
-
             next();
         }catch(error){
             return res.status(401).json({
