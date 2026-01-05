@@ -1,20 +1,31 @@
-/*import Login from "../pages/Login";
-import Register from "../pages/Register";
-function App() {
-  return (  
-    <Login/>
-  );
-}
-
-export default App;*/
-
+import React from "react";
+import {Routes,Route,Navigate} from "react-router-dom";
 import Login from "../pages/Login";
 import Dashboard from "../pages/Dashboard";
+import Register from "../pages/Register";
+import ProtectedRoutes from "../components/ProtectedRoutes";
 
-const isLoggedIn = !!localStorage.getItem("token");
 
 function App() {
-  return isLoggedIn ? <Dashboard /> : <Login />;
+  return(
+    <Routes>
+      <Route path="/" element={<Navigate to="/login"/>}/>
+
+      <Route path="/login" element={<Login/>}/>
+      <Route path="/register" element={<Register/>}/>
+
+      <Route 
+      path="/dashboard"
+      element = {
+        <ProtectedRoutes>
+          <Dashboard/>
+        </ProtectedRoutes>
+      }
+      />
+
+      <Route path="*" element={<Login/>}/>
+    </Routes>
+  )
 }
 
 export default App;
