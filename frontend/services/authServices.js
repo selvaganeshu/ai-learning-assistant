@@ -14,3 +14,12 @@ export const getMe = async ()=>{
     const response = await api.get("/auth/me");
     return response.data;
 }
+
+export const uploadDocument = async (formData)=>{
+    const response = await api.post("/documents",formData,{
+        headers : {
+            "Content-Type" : "multipart/form-data"
+        }
+    });
+    return response.data;
+}
