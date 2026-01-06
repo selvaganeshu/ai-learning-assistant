@@ -12,3 +12,6 @@ build/
 npm-debug.log*
 
 
+# uploads
+uploads/
+
