@@ -22,6 +22,7 @@ export const uploadDocument = async(req,res)=>{
             title,
             filePath : req.file.path,
             fileName : req.file.filename,
+            fileSize : req.file.size,
             userId : req.user._id
         })
 

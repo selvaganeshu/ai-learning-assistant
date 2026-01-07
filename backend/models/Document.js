@@ -14,6 +14,9 @@ const DocumentSchema = new mongoose.Schema({
         type : String,
         required : true
     },
+    fileSize : {
+        type : Number,
+    },
     userId : {
         type : mongoose.Schema.Types.ObjectId,
         ref : "User",
