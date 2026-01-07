@@ -1,4 +1,6 @@
 import Document from '../models/Document.js';
+import fs from 'fs';
+import path from 'path';
 
 export const uploadDocument = async(req,res)=>{
     try{
@@ -49,6 +51,44 @@ export const getDocuments = async(req,res)=>{
         })
     }
     catch(error){
+        console.error(`error : ${error}`);
+        res.status(500).json({
+            success : false,
+            error : "Server Error"
+        })
+    }
+}
+
+export const deleteDocument = async(req,res)=>{
+    try{
+        const document = await Document.findById(req.params.id);
+        if(!document){
+            return res.status(404).json({
+                success : false,
+                error : "Document not found"
+            })
+        }
+        
+        //ownership check
+        if(document.userId.toString() !== req.user._id.toString()){
+            return res.status(401).json({
+                success : false,
+                error : "Not authorized to delete this document"
+            })
+        }
+
+        const filePath = path.resolve(document.filePath);
+        if(fs.existsSync(filePath)){
+            fs.unlinkSync(filePath);
+        }
+
+        await document.deleteOne();
+
+        res.status(200).json({
+            success : true,
+            message : "Document deleted successfully"
+        });
+    }catch(error){
         console.error(`error : ${error}`);
         res.status(500).json({
             success : false,
