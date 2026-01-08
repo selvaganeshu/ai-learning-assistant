@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { getDocuments } from "../services/documentServices.js";
 import { useNavigate } from "react-router-dom";
+import { deleteDocument } from "../services/documentServices.js";
 
 const Documents = () => {
   const [documents, setDocuments] = useState([]);
@@ -23,6 +24,8 @@ const Documents = () => {
 
     fetchDocuments();
   }, []);
+
+  
 
   if (loading) {
     return <p className="p-6">Loading documents...</p>;
@@ -54,7 +57,7 @@ const Documents = () => {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {documents.map((doc) => (
-              <DocumentCard key={doc._id} doc={doc} />
+              <DocumentCard key={doc._id} doc={doc}  />
             ))}
           </div>
         )}
@@ -72,13 +75,25 @@ const DocumentCard = ({ doc }) => {
   const fileSizeKB = doc.fileSize
     ? (doc.fileSize / 1024).toFixed(1)
     : "—";
-
+    const handleDelete = async (documentId) => {
+    try{
+      const blob = await deleteDocument(documentId);
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = doc.title + ".pdf";
+      a.click();
+      window.URL.revokeObjectURL(url);
+      toast.success("Document deleted successfully");
+    }catch(error){
+      toast.error("Failed to delete document");
+    }
+  }
   return (
     <div className="bg-white rounded-xl shadow-sm hover:shadow-md transition p-4 relative">
-
-     
       <button
-        className="absolute top-3 right-3 text-slate-400 hover:text-red-500"
+      onClick={()=> handleDelete(doc._id)}
+        className="absolute top-3 right-3 text-slate-400 hover:text-red-500 cursor-pointer"
         title="Delete (coming soon)"
       >
         🗑️
@@ -103,7 +118,6 @@ const DocumentCard = ({ doc }) => {
         <span className="text-emerald-600">🧠 0 Quizzes</span>
       </div>
 
-      
       <p className="text-xs text-slate-400 mt-3">
         Uploaded {timeAgo(doc.createdAt)}
       </p>
