@@ -8,7 +8,7 @@ import { deleteDocument } from "../services/documentServices.js";
 const Documents = () => {
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
+  const navigate = useNavigate(); 
 
   useEffect(() => {
     const fetchDocuments = async () => {
@@ -21,11 +21,22 @@ const Documents = () => {
         setLoading(false);
       }
     };
-
     fetchDocuments();
   }, []);
 
-  
+  const handleDelete = async (documentId) => {
+     const confirmDelete = window.confirm(
+    "Are you sure you want to delete this document?"
+  );
+    if (!confirmDelete) return;
+    try{
+      await deleteDocument(documentId);
+      setDocuments((prev)=> prev.filter((doc)=> doc._id !== documentId));
+      toast.success("Document deleted successfully");
+    }catch(error){
+      toast.error("Failed to delete document");
+    }
+  }
 
   if (loading) {
     return <p className="p-6">Loading documents...</p>;
@@ -57,7 +68,7 @@ const Documents = () => {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {documents.map((doc) => (
-              <DocumentCard key={doc._id} doc={doc}  />
+              <DocumentCard key={doc._id} doc={doc} handleDelete={handleDelete} />
             ))}
           </div>
         )}
@@ -71,24 +82,11 @@ export default Documents;
 
 
 
-const DocumentCard = ({ doc }) => {
+const DocumentCard = ({ doc,handleDelete }) => {
   const fileSizeKB = doc.fileSize
     ? (doc.fileSize / 1024).toFixed(1)
     : "—";
-    const handleDelete = async (documentId) => {
-    try{
-      const blob = await deleteDocument(documentId);
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = doc.title + ".pdf";
-      a.click();
-      window.URL.revokeObjectURL(url);
-      toast.success("Document deleted successfully");
-    }catch(error){
-      toast.error("Failed to delete document");
-    }
-  }
+   
   return (
     <div className="bg-white rounded-xl shadow-sm hover:shadow-md transition p-4 relative">
       <button

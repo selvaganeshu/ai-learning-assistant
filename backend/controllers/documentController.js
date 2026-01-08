@@ -96,3 +96,42 @@ export const deleteDocument = async(req,res)=>{
         })
     }
 }
+
+export const downloadDocument = async(req,res)=>{
+    try{
+        const document = await Document.findById(req.params.id);
+        if(!document){
+            return res.status(404).json({
+                success : false,
+                error : "Document not found"
+            })
+        }
+
+        if(document.userId.toString() !== req.user._id.toString()){
+            return res.status(401).json({
+                success : false,
+                error : "Not authorized to download this document"
+            })
+        }
+
+        const filePath = path.resolve(document.filePath);
+        if(!fs.existsSync(filePath)){
+            return res.status(404).json({
+                success : false,
+                error : "File not found on server"
+            })
+        }
+
+        res.setHeader("Content-Disposition",`attachment; filename =${document.fileName}`);
+        res.setHeader("Content-type","application/pdf");
+
+        const fileStream = fs.createReadStream(filePath);
+        fileStream.pipe(res);
+    }catch(error){
+        console.error(`error : ${error}`);
+        res.status(500).json({
+            success : false,
+            error : "Server Error"
+        })
+    }
+}
