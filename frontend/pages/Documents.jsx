@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { getDocuments } from "../services/documentServices.js";
 import { useNavigate } from "react-router-dom";
-import { deleteDocument } from "../services/documentServices.js";
+import { deleteDocument,downloadDocument } from "../services/documentServices.js";
 
 const Documents = () => {
   const [documents, setDocuments] = useState([]);
@@ -37,6 +37,8 @@ const Documents = () => {
       toast.error("Failed to delete document");
     }
   }
+
+  
 
   if (loading) {
     return <p className="p-6">Loading documents...</p>;
@@ -86,6 +88,22 @@ const DocumentCard = ({ doc,handleDelete }) => {
   const fileSizeKB = doc.fileSize
     ? (doc.fileSize / 1024).toFixed(1)
     : "—";
+
+    const handleDownload = async(doc)=>{
+    try{
+      const blob = await downloadDocument(doc._id);
+      const url = window.URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = doc.title + ".pdf";
+      a.click();
+
+      window.URL.revokeObjectURL(url);
+    }catch{
+      toast.error("Failed to download document");
+    }
+  }
    
   return (
     <div className="bg-white rounded-xl shadow-sm hover:shadow-md transition p-4 relative">
@@ -98,8 +116,9 @@ const DocumentCard = ({ doc,handleDelete }) => {
       </button>
 
     
-      <div className="w-10 h-10 bg-emerald-100 text-emerald-600
-      rounded-lg flex items-center justify-center mb-4">
+      <div onClick={()=> handleDownload(doc)}
+      className="w-10 h-10 bg-emerald-100 text-emerald-600
+      rounded-lg flex items-center justify-center mb-4 cursor-pointer">
         📄
       </div>
 

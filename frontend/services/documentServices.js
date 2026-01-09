@@ -6,8 +6,13 @@ export const getDocuments = async () => {
 };
 
 export const deleteDocument = async (documentId) => {
-  const response = await api.delete(`/documents/${documentId}`,{
-    responseType : 'blob'
+  const response = await api.delete(`/documents/${documentId}`);
+  return response.data;
+}
+
+export const downloadDocument = async(documentId)=>{
+  const response = await api.get(`/documents/${documentId}/download`,{
+    responseType : "blob"
   });
   return response.data;
 }
