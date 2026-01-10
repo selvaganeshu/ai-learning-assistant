@@ -1,4 +1,5 @@
 import Document from '../models/Document.js';
+import extractTextFromPDF from '../utils/pdfExtractor.js';
 import fs from 'fs';
 import path from 'path';
 
@@ -132,6 +133,41 @@ export const downloadDocument = async(req,res)=>{
         res.status(500).json({
             success : false,
             error : "Server Error"
+        })
+    }
+}
+
+export const extractDocumentText = async(req,res)=>{
+    try{
+        const document = await Document.findById(req.params.id);
+
+        if(!document){
+            return res.status(404).json({
+                success : false,
+                error : "Document not found"
+            })
+        }
+
+        if(document.userId.toString() !== req.user._id  .toString()){
+            return res.status(401).json({
+                success : false,
+                error : "Authorization failed"
+            })
+        }
+
+        const text = await extractTextFromPDF(document.filePath);
+
+        res.status(200).json({
+            success : true,
+            data : {
+                text,
+            }
+        })
+    }catch(error){
+        console.error(`error : ${error}`);
+        res.status(500).json({
+            success : false,
+            error : "Server error"
         })
     }
 }
