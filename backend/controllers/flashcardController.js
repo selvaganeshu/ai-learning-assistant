@@ -52,3 +52,32 @@ export const generateFlashcards = async (req,res)=>{
         })
     }
 }
+
+export const getFlashcards = async(req,res)=>{
+    try{
+        const flashcards = await Flashcard.find({
+            userId : req.user._id,
+            documentId : req.params.documentId
+        }).sort({createdAt : -1});
+
+        if (flashcards.length === 0) {
+            return res.status(200).json({
+            success: true,
+            message: "No flashcards available",
+            data: [],
+            });
+        }
+
+        res.status(200).json({
+            success : true,
+            count : flashcards.length,
+            data : flashcards
+        })
+    }catch(error){
+        console.error(`error : ${error.message}`);
+        res.status(500).json({
+            success : false,
+            error : "get Flashcard Failed"
+        })
+    }
+}
