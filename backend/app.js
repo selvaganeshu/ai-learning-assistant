@@ -3,6 +3,7 @@ import cors from "cors";
 import authRoutes from "./routes/authRoutes.js";
 import documentRoutes from "./routes/documentRoutes.js";
 import dashboardRoutes from "./routes/dashboardRoutes.js";
+import flashcardRoutes from "./routes/flashcardRoutes.js"
 import protect from "./middleware/authMiddleware.js";
 
 const app = express();
@@ -13,6 +14,7 @@ app.use(express.json());
 app.use("/api/auth",authRoutes);
 app.use("/api/documents",documentRoutes);
 app.use("/api/dashboard",dashboardRoutes);
+app.use("/api/flashcards",flashcardRoutes);
 
 app.get("/api/protected", protect, (req, res) => {
   res.json({
