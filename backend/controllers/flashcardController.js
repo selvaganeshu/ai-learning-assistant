@@ -67,7 +67,6 @@ export const getFlashcards = async(req,res)=>{
             data: [],
             });
         }
-
         res.status(200).json({
             success : true,
             count : flashcards.length,

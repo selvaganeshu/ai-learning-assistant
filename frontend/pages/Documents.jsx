@@ -38,8 +38,6 @@ const Documents = () => {
     }
   }
 
-  
-
   if (loading) {
     return <p className="p-6">Loading documents...</p>;
   }
@@ -85,6 +83,7 @@ export default Documents;
 
 
 const DocumentCard = ({ doc,handleDelete }) => {
+   const navigate = useNavigate();
   const fileSizeKB = doc.fileSize
     ? (doc.fileSize / 1024).toFixed(1)
     : "—";
@@ -134,7 +133,12 @@ const DocumentCard = ({ doc,handleDelete }) => {
         <span className="text-purple-600">📘 0 Flashcards</span>
         <span className="text-emerald-600">🧠 0 Quizzes</span>
       </div>
-
+      <button 
+      onClick={()=> navigate(`/documents/${doc._id}/flashcards`)}
+      className = "mt-3 text-sm text-emerald-600 cursor-pointer hover:underline"
+      >
+        View Flashcards 
+      </button>
       <p className="text-xs text-slate-400 mt-3">
         Uploaded {timeAgo(doc.createdAt)}
       </p>

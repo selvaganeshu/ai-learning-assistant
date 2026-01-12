@@ -5,7 +5,7 @@ import Dashboard from "../pages/Dashboard";
 import Register from "../pages/Register";
 import ProtectedRoutes from "../components/ProtectedRoutes";
 import Documents from "../pages/Documents";
-
+import Flashcards from "../pages/Flashcard";
 
 function App() {
   return(
@@ -22,7 +22,6 @@ function App() {
       </ProtectedRoutes>
       }
       />
-
       <Route 
       path="/dashboard"
       element = {
@@ -31,7 +30,14 @@ function App() {
         </ProtectedRoutes>
       }
       />
-
+      <Route
+      path="/documents/:id/flashcards"
+      element = {
+        <ProtectedRoutes>
+          <Flashcards/>
+        </ProtectedRoutes>
+      }
+      />
       <Route path="*" element={<Login/>}/>
     </Routes>
   )

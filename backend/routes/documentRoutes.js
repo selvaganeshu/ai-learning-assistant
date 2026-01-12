@@ -16,5 +16,4 @@ router.delete("/:id",protect,deleteDocument);
 router.get("/:id/download",protect,downloadDocument);
 router.get("/:id/extract",protect,extractDocumentText);
 
-
 export default router;
