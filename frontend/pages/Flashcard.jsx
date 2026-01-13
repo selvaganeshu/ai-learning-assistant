@@ -72,9 +72,13 @@ const Flashcards = ()=>{
                     </button>
                     <button 
                     className="cursor-pointer"
-                    disabled = {index === flashcards.length-1}
                     onClick = {()=>{
-                        setIndex(index+1)
+                        if(index > flashcards.length-1){
+                            setIndex(0);
+                        }
+                        else{
+                            setIndex(index+1);
+                        }
                     }}
                     >
                         Next

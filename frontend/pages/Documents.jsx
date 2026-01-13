@@ -130,8 +130,8 @@ const DocumentCard = ({ doc,handleDelete }) => {
 
       
       <div className="flex gap-4 mt-3 text-sm">
-        <span className="text-purple-600">📘 0 Flashcards</span>
-        <span className="text-emerald-600">🧠 0 Quizzes</span>
+        <span className="text-purple-600">📘{doc.flashcardCount} Flashcards</span>
+        <span className="text-emerald-600">🧠 {doc.quizCount} Quizzes</span>
       </div>
       <button 
       onClick={()=> navigate(`/documents/${doc._id}/flashcards`)}
