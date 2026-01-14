@@ -40,3 +40,29 @@ export const generateQuiz = async (req, res) => {
     });
   }
 };
+
+
+export const getQuizByDocument = async(req,res)=>{
+  try{
+    const quiz = await Quiz.findOne({
+      userId : req.user._id,
+      documentId : req.params.documentId
+    });
+    if(!quiz){
+      return res.status(200).json({
+        success : true,
+        data : null
+      })
+    }
+    res.status(200).json({
+      success : true,
+      data : quiz
+    })
+  }catch(error){
+    console.error(`error : ${error.message}`);
+    res.status(500).json({
+      success : false,
+      error : "Failed to fetch quiz"
+    })
+  }
+}
