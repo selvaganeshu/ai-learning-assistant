@@ -6,6 +6,7 @@ import Register from "../pages/Register";
 import ProtectedRoutes from "../components/ProtectedRoutes";
 import Documents from "../pages/Documents";
 import Flashcards from "../pages/Flashcard";
+import Quiz from "../pages/Quiz";
 
 function App() {
   return(
@@ -35,6 +36,14 @@ function App() {
       element = {
         <ProtectedRoutes>
           <Flashcards/>
+        </ProtectedRoutes>
+      }
+      />
+      <Route 
+      path="/documents/:documentId/quizzes"
+      element = {
+        <ProtectedRoutes>
+          <Quiz/>
         </ProtectedRoutes>
       }
       />

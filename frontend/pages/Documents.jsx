@@ -139,6 +139,12 @@ const DocumentCard = ({ doc,handleDelete }) => {
       >
         View Flashcards 
       </button>
+      <button 
+      onClick={()=> navigate(`/documents/${doc._id}/quizzes`)}
+      className = "mt-3 text-sm text-emerald-600 cursor-pointer hover:underline"
+      >
+        View Quizzes 
+      </button>
       <p className="text-xs text-slate-400 mt-3">
         Uploaded {timeAgo(doc.createdAt)}
       </p>
