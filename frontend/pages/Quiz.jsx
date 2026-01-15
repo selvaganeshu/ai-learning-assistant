@@ -12,6 +12,7 @@ const Quiz = () => {
   const [showResults, setShowResults] = useState(false);
   const [answers, setAnswers] = useState({});
   const [index, setIndex] = useState(0);
+  const [revealed, setRevealed] = useState(false);
 
   useEffect(() => {
     const fetchQuiz = async () => {
@@ -45,12 +46,16 @@ const Quiz = () => {
     }
   };
 
+  const handleBack = () => {
+    setIndex(index - 1);
+  };
+
   const score = quiz.questions.reduce((acc, q, index) => {
     return acc + (answers[index] === q.correctAnswer ? 1 : 0);
   }, 0);
 
   return (
-    <div className="min-h-screen p-6 bg-slate-100 flex justify-center">
+    <div className="min-h-screen p-6 bg-slate-100 flex justify-center items-center">
       <div className="bg-white rounded-xl shadow p-6 w-full max-w-xl">
         {!showResults ? (
           <>
@@ -65,47 +70,84 @@ const Quiz = () => {
                 <button
                   key={opt}
                   onClick={() => handleSelect(opt)}
-                  className={`w-full px-4 py-2 border rounded-lg text-left cursor-pointer
-                                ${
-                                  answers[index] === opt
-                                    ? "bg-emerald-100 border-emerald-400"
-                                    : "hover:bg-slate-50"
-                                }`}
+                  className={`w-full px-4 py-2 border rounded-lg text-left
+      ${
+        answers[index] === opt
+          ? "bg-emerald-100 border-emerald-400"
+          : "hover:bg-slate-50"
+      }`}
                 >
                   {opt}
                 </button>
               ))}
             </div>
-            <button
-              onClick={handleNext}
-              disabled={answers[index] == null}
-              className="mt-6 w-full bg-emerald-500 text-white cursor-pointer py-2 rounded-lg disabled:opacity-50"
-            >
-              {index === quiz.questions.length - 1 ? "Finish" : "Next"}
-            </button>
+            <div className="flex justify-between">
+              <button
+                disabled={index === 0}
+                onClick={handleBack}
+                className="mt-6 w-[200px] bg-slate-200 text-black cursor-pointer py-2 rounded-lg disabled:opacity-50"
+              >
+                Back
+              </button>
+              <button
+                disabled={answers[index] == null}
+                onClick={handleNext}
+                className="mt-6 w-[200px] bg-green-200 text-black cursor-pointer py-2 rounded-lg disabled:opacity-50"
+              >
+                {index === quiz.questions.length - 1 ? "Finish Quiz" : "Next"}
+              </button>
+            </div>
           </>
         ) : (
           <>
             <h2 className="mb-4 text-lg font-semibold">Quiz Result</h2>
-            <p>
+            <p className="mb-4">
               You scored <strong>{score}</strong> / {quiz.questions.length}
             </p>
+            <div className="mb-4 max-h-[400px] overflow-y-auto">
+              {quiz.questions.map((ques,Index)=>{
+                const userAnswer = answers[Index];
+                const isCorrect = userAnswer === ques.correctAnswer;
+                return (
+                  <div 
+                  key={Index}
+                  className= {`p-4 rounded-lg border flex flex-col gap-y-3 mb-4 ${
+                    isCorrect ? "bg-green-50 border-green-300"
+                    : "bg-red-50 border-red-300"
+                  }`}
+                  >
+                    <p className=" font-medium">
+                        Q{Index+1}.{ques.question}
+                    </p>
 
-            <div className="mb-6 flex gap-4">
-              <button
-                className="flex-1 bg-slate-200 py-2 rounded"
-                onClick={() => {
-                  setIndex(0);
-                  setAnswers({});
-                  setShowResults(false);
-                }}
-              >
+                    <p >Your Answer : {answers[Index]}</p>
+
+                    {!isCorrect && (
+                      <p>Correct Answer : {ques.correctAnswer}</p>
+                    )}
+
+                    <p className="mt-2 font-semibold">
+                      {isCorrect ? "Correct" : "Wrong"}
+                    </p>
+                  </div>
+                )
+              })}
+            </div>
+            <div className="flex justify-between mb-4">
+              <button 
+              onClick={()=>{
+                setShowResults(false);
+                setIndex(0);
+                setAnswers({})
+              }}
+              className="bg-slate-300 p-2 w-[100px] rounded-lg cursor-pointer">
                 Restart
               </button>
-              <button
-                onClick={() => navigate(-1)}
-                className="flex-1 bg-emerald-500 text-white py-2 rounded"
-              >
+              <button 
+              onClick={()=>{
+                navigate(-1)
+              }}
+              className="bg-green-300 p-2 w-[100px] rounded-lg cursor-pointer">
                 Back
               </button>
             </div>
