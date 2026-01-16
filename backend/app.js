@@ -5,6 +5,7 @@ import documentRoutes from "./routes/documentRoutes.js";
 import dashboardRoutes from "./routes/dashboardRoutes.js";
 import flashcardRoutes from "./routes/flashcardRoutes.js";
 import quizRoutes from "./routes/quizRoutes.js";
+import quizAttemptRoutes from "./routes/quizAttemptRoutes.js";
 import protect from "./middleware/authMiddleware.js";
 
 const app = express();
@@ -17,6 +18,7 @@ app.use("/api/documents",documentRoutes);
 app.use("/api/dashboard",dashboardRoutes);
 app.use("/api/flashcards",flashcardRoutes);
 app.use("/api/quizzes",quizRoutes);
+app.use("/api/quiz-attempts",quizAttemptRoutes);
 
 app.get("/api/protected", protect, (req, res) => {
   res.json({
