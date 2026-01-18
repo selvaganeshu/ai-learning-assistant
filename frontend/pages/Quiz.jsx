@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { getQuizByDocument } from "../services/quizServices.js";
 import { useParams, useNavigate } from "react-router-dom";
-
+import { saveQuizAttempt } from "../services/quizAttemptServices.js";
 const Quiz = () => {
   const { documentId } = useParams();
   const navigate = useNavigate();
@@ -12,7 +12,6 @@ const Quiz = () => {
   const [showResults, setShowResults] = useState(false);
   const [answers, setAnswers] = useState({});
   const [index, setIndex] = useState(0);
-  const [revealed, setRevealed] = useState(false);
 
   useEffect(() => {
     const fetchQuiz = async () => {
@@ -38,8 +37,15 @@ const Quiz = () => {
     setAnswers({ ...answers, [index]: option });
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (index === quiz.questions.length - 1) {
+      try {
+        await saveQuizAttempt(documentId, score);
+        toast.success("Quiz score saved");
+      } catch {
+        toast.error("Failed to save Quiz score");
+      }
+      console.log("saved");
       setShowResults(true);
     } else {
       setIndex(index + 1);
@@ -71,11 +77,10 @@ const Quiz = () => {
                   key={opt}
                   onClick={() => handleSelect(opt)}
                   className={`w-full px-4 py-2 border rounded-lg text-left
-      ${
-        answers[index] === opt
-          ? "bg-emerald-100 border-emerald-400"
-          : "hover:bg-slate-50"
-      }`}
+      ${answers[index] === opt
+                      ? "bg-emerald-100 border-emerald-400"
+                      : "hover:bg-slate-50"
+                    }`}
                 >
                   {opt}
                 </button>
@@ -105,49 +110,49 @@ const Quiz = () => {
               You scored <strong>{score}</strong> / {quiz.questions.length}
             </p>
             <div className="mb-4 max-h-[400px] overflow-y-auto">
-              {quiz.questions.map((ques,Index)=>{
+              {quiz.questions.map((ques, Index) => {
                 const userAnswer = answers[Index];
                 const isCorrect = userAnswer === ques.correctAnswer;
                 return (
-                  <div 
-                  key={Index}
-                  className= {`p-4 rounded-lg border flex flex-col gap-y-3 mb-4 ${
-                    isCorrect ? "bg-green-50 border-green-300"
-                    : "bg-red-50 border-red-300"
-                  }`}
+                  <div
+                    key={Index}
+                    className={`p-4 rounded-lg border flex flex-col gap-y-3 mb-4 ${isCorrect
+                        ? "bg-green-50 border-green-300"
+                        : "bg-red-50 border-red-300"
+                      }`}
                   >
                     <p className=" font-medium">
-                        Q{Index+1}.{ques.question}
+                      Q{Index + 1}.{ques.question}
                     </p>
 
-                    <p >Your Answer : {answers[Index]}</p>
+                    <p>Your Answer : {answers[Index]}</p>
 
-                    {!isCorrect && (
-                      <p>Correct Answer : {ques.correctAnswer}</p>
-                    )}
+                    {!isCorrect && <p>Correct Answer : {ques.correctAnswer}</p>}
 
                     <p className="mt-2 font-semibold">
                       {isCorrect ? "Correct" : "Wrong"}
                     </p>
                   </div>
-                )
+                );
               })}
             </div>
             <div className="flex justify-between mb-4">
-              <button 
-              onClick={()=>{
-                setShowResults(false);
-                setIndex(0);
-                setAnswers({})
-              }}
-              className="bg-slate-300 p-2 w-[100px] rounded-lg cursor-pointer">
+              <button
+                onClick={() => {
+                  setShowResults(false);
+                  setIndex(0);
+                  setAnswers({});
+                }}
+                className="bg-slate-300 p-2 w-[100px] rounded-lg cursor-pointer"
+              >
                 Restart
               </button>
-              <button 
-              onClick={()=>{
-                navigate(-1)
-              }}
-              className="bg-green-300 p-2 w-[100px] rounded-lg cursor-pointer">
+              <button
+                onClick={() => {
+                  navigate(-1);
+                }}
+                className="bg-green-300 p-2 w-[100px] rounded-lg cursor-pointer"
+              >
                 Back
               </button>
             </div>

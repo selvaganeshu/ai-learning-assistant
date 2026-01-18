@@ -19,7 +19,7 @@ const QuizAttemptSchema = new mongoose.Schema({
         type : Number,
         required : true
     }
-},{timeStamps : true});
+},{timestamps : true});
 
 const QuizAttempt = mongoose.model("QuizAttempt",QuizAttemptSchema);
 
