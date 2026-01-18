@@ -55,3 +55,44 @@ export const getQuizAttempt = async(req,res)=>{
         })
     }
 }
+
+export const getBestQuizScore = async (req,res)=>{
+    try{
+        const attempts = await QuizAttempt.find({
+            userId : req.user._id
+        })
+
+        if(attempts.length === 0){
+            return res.status(200).json({
+                success : true,
+                data : null
+            })
+        }
+
+        let best = null;
+        let bestPercentage = 0;
+
+        attempts.forEach((a)=>{
+            const percentage = (a.score / a.totalQuestions) * 100;
+            if(percentage > bestPercentage){
+                bestPercentage = percentage;
+                best = a;
+            }
+        })
+
+        res.status(200).json({
+            success : true,
+            data : {
+                score : best.score,
+                totalQuestions : best.totalQuestions,
+                percentage : Math.round(bestPercentage)
+            }
+        });
+    }catch(error){
+        console.error(`Error : ${error}`);
+        res.status(500).json({
+            success : false,
+            error : "Failed to fetch best quiz score"
+        })
+    }
+}
