@@ -1,4 +1,6 @@
 import Document from "../models/Document.js";
+import Flashcard from "../models/Flashcard.js";
+import Quiz from "../models/Quiz.js";
 
 export const getDashboardData = async(req,res)=>{
     try{
@@ -6,8 +8,9 @@ export const getDashboardData = async(req,res)=>{
 
         const documentCount = await Document.countDocuments({userId});
 
-        const flashCardCount = 0;
-        const quizCount = 0;
+        const flashCardCount = await Flashcard.countDocuments({userId});
+
+        const quizCount = await Quiz.countDocuments({userId});
 
         res.status(200).json({
             success : true,
