@@ -96,3 +96,28 @@ export const getBestQuizScore = async (req,res)=>{
         })
     }
 }
+
+export const getQuizProgress = async (req,res)=>{
+    try{
+        const attemps = await QuizAttempt.find({
+            userId : req.user._id
+        }).sort({createdAt : 1});
+
+        const progress = attemps.map((a)=>({
+            data : a.createdAt,
+            accuracy : Math.round((a.score / a.totalQuestions)*100)
+        }))
+
+        res.status(200).json({
+            success : true,
+            data : progress
+        })
+
+    }catch(error){
+        console.error(`Error : ${error}`);
+        res.status(500).json({
+            success : false,
+            error : "Failed to fetch quiz progress"
+        })
+    }
+}
