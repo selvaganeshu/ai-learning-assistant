@@ -1,22 +1,24 @@
 import { useEffect, useState } from "react";
 import { getDashboardData } from "../services/authServices.js";
 import { useAuth } from "../context/AuthContext";
+import { getBestScore } from "../services/quizAttemptServices.js";
 import toast from "react-hot-toast";
 
 const Dashboard = () => {
   const { user } = useAuth();
-  const [stats, setStats] = useState({
-    totalDocuments: 0,
-    totalFlashcards: 0,
-    totalQuizzes: 0,
-  });
+  const [bestScore,setBestScore] = useState(null);
+  const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchStats = async () => {
+    const fetchDashboard = async () => {
       try {
-        const res = await getDashboardData();
-        setStats(res.data);
+        const [statsRes, bestScoreRes] = await Promise.all([
+          getDashboardData(),
+          getBestScore(),
+        ]);
+        setStats(statsRes.data);
+        setBestScore(bestScoreRes.data);
       } catch (error) {
         toast.error("Failed to load dashboard data");
       } finally {
@@ -24,7 +26,7 @@ const Dashboard = () => {
       }
     };
 
-    fetchStats();
+    fetchDashboard();
   }, []);
 
   if (loading) return <p className="p-6">Loading dashboard...</p>;
@@ -38,9 +40,25 @@ const Dashboard = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <StatCard title="Total Documents" value={stats.totalDocuments} />
-        <StatCard title="Total Flashcards" value={stats.totalFlashcards} />
-        <StatCard title="Total Quizzes" value={stats.totalQuizzes} />
+        <StatCard title="Total Documents" value={stats.documentCount} />
+        <StatCard title="Total Flashcards" value={stats.flashCardCount} />
+        <StatCard title="Total Quizzes" value={stats.quizCount} />
+
+        <div className="bg-white rounded-xl shadow p-6">
+          <p className="text-sm text-slate-500 mb-1">Best Quiz Score</p>
+          {bestScore ? (
+            <>
+            <h2 className="text-2xl font-bold">
+              {bestScore.percentage}%
+            </h2>
+            <p className="text-sm text-slate-500 mt-1">
+              {bestScore.score} / {bestScore.totalQuestions}
+            </p>
+            </>
+          ) : (
+            <p className="text-slate-400 mt-4">No quizzes attempted yet</p>
+          )}
+        </div>
       </div>
 
       {/* Placeholder for recent activity / chat */}
@@ -54,11 +72,13 @@ const Dashboard = () => {
   );
 };
 
-const StatCard = ({ title, value }) => (
+const StatCard = ({ title, value}) => (
   <div className="bg-white rounded-xl shadow p-6">
     <p className="text-sm text-slate-500">{title}</p>
     <h2 className="text-3xl font-bold mt-2">{value}</h2>
   </div>
 );
+
+
 
 export default Dashboard;

@@ -11,3 +11,8 @@ export const getQuizAttempt = async(documentId)=>{
     const response = await api.get(`/quiz-attempts/${documentId}`);
     return response.data;
 }
+
+export const getBestScore = async()=>{
+    const response = await api.get("/quiz-attempts/best");
+    return response.data;
+}
