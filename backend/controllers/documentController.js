@@ -29,7 +29,11 @@ export const uploadDocument = async (req, res) => {
       fileSize: req.file.size,
       userId: req.user._id,
     });
+    const extractedText = await extractTextFromPDF(document.filePath);
 
+    document.pdfText = extractedText;
+
+    await document.save();
     res.status(201).json({
       success: true,
       data: document,
