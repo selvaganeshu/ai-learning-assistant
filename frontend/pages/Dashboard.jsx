@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { getDashboardData } from "../services/authServices.js";
 import { useAuth } from "../context/AuthContext";
-import { getBestScore } from "../services/quizAttemptServices.js";
+import { getBestScore,getQuizProgress} from "../services/quizAttemptServices.js";
+import {LineChart,Line,XAxis,YAxis,Tooltip,ResponsiveContainer} from "recharts";
 import toast from "react-hot-toast";
 
 const Dashboard = () => {
@@ -9,16 +10,19 @@ const Dashboard = () => {
   const [bestScore,setBestScore] = useState(null);
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [progress,setProgress] = useState([]);
 
   useEffect(() => {
     const fetchDashboard = async () => {
       try {
-        const [statsRes, bestScoreRes] = await Promise.all([
+        const [statsRes, bestScoreRes,progressRes] = await Promise.all([
           getDashboardData(),
           getBestScore(),
+          getQuizProgress()
         ]);
         setStats(statsRes.data);
         setBestScore(bestScoreRes.data);
+        setProgress(progressRes.data);
       } catch (error) {
         toast.error("Failed to load dashboard data");
       } finally {
@@ -59,6 +63,37 @@ const Dashboard = () => {
             <p className="text-slate-400 mt-4">No quizzes attempted yet</p>
           )}
         </div>
+      </div>
+
+      <div className="bg-white p-6 rounded-xl shadow mb-4">
+        <h2 className="text-lg font-semibold mb-4">Quiz Accuracy Over Time</h2>
+
+        {progress.length === 0 ? (
+          <p className="text-slate-500">Take quiz to see your progress.</p>
+        ) : (
+          <div className="h-64">
+            <ResponsiveContainer width="75%" height="100%">
+              <LineChart 
+              data={progress}>
+                <XAxis 
+                dataKey="data"
+                tickFormatter={(date)=> new Date(date).toLocaleDateString()}
+                />
+                <YAxis domain={[0,100]}/>
+                <Tooltip 
+                formatter={(value)=> `${value}%`}
+                labelFormatter={(label)=> new Date(label).toLocaleDateString()}
+                />
+                <Line 
+                type="monotone"
+                  dataKey="accuracy"
+                  stroke="#10b981"
+                  strokeWidth={3}
+                  dot={{ r: 4 }}/>
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        )}
       </div>
 
       {/* Placeholder for recent activity / chat */}

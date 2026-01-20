@@ -16,3 +16,8 @@ export const getBestScore = async()=>{
     const response = await api.get("/quiz-attempts/best");
     return response.data;
 }
+
+export const getQuizProgress = async()=>{
+    const response = await api.get("/quiz-attempts/progress");
+    return response.data;
+}
