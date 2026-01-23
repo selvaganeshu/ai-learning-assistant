@@ -30,7 +30,7 @@ export const chatWithDocument = async (req,res)=>{
         You are an AI tutor.
 
         Answer the user's question using ONLY the context below.
-        If the answer is not in the context, say "I don't know".
+        
 
         CONTEXT:
         ${context}
