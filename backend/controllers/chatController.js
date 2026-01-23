@@ -72,3 +72,27 @@ export const chatWithDocument = async (req,res)=>{
         })
     }
 }
+
+export const getChatHistory = async(req,res)=>{
+    try{
+        const {documentId} = req.params;
+
+        const userId = req.user._id;
+
+        const chats = await Chat.find({
+            userId,
+            documentId
+        }).sort({createdAt : 1});
+
+        res.status(200).json({
+            success : true,
+            data : chats
+        })
+    }catch(error){
+        console.error(`error : ${error}`);
+        res.status(500).json({
+            success : false,
+            error : "Fetching Chat History Failed"
+        })
+    }
+}
