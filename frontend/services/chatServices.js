@@ -7,3 +7,8 @@ export const sendChatMessage = async(documentId,message)=>{
 
     return response.data;
 }
+
+export const getChatHistory = async(documentId)=>{
+    const response = await api.get(`/chat/${documentId}`);
+    return response.data;
+}

@@ -1,14 +1,29 @@
 import {useState} from "react";
 import {useParams} from "react-router-dom";
 import toast from "react-hot-toast";
-import { sendChatMessage } from "../services/chatServices.js";
+import { sendChatMessage,getChatHistory } from "../services/chatServices.js";
+import { useEffect } from "react";
 
 const Chat = ()=>{
     const {documentId} = useParams();
-
     const [input,setInput] = useState("");
     const [message,setMessage] = useState([]);
     const [loading,setLoading] = useState(false);
+
+    useEffect(()=>{
+        const fetchChatHistory = async()=>{
+            try{
+                const res = await getChatHistory(documentId);
+                setMessage(res.data);
+            }catch(error){
+                toast.error("Error in fetching chat history"); 
+            }
+            finally{
+                setLoading(false);
+            } 
+        }
+        fetchChatHistory();
+    },[documentId])
 
     const sendMessages = async (e)=>{
         if(!input.trim()) return ;
