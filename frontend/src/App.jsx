@@ -8,6 +8,7 @@ import Documents from "../pages/Documents";
 import Flashcards from "../pages/Flashcard";
 import Quiz from "../pages/Quiz";
 import QuizHistory from "../pages/QuizHistory";
+import Chat from "../pages/Chat";
 
 function App() {
   return(
@@ -53,6 +54,14 @@ function App() {
       element = {
         <ProtectedRoutes>
           <QuizHistory/>
+        </ProtectedRoutes>
+      }
+      />
+      <Route
+      path = "/documents/:documentId/chat"
+      element = {
+        <ProtectedRoutes>
+          <Chat/>
         </ProtectedRoutes>
       }
       />
