@@ -50,7 +50,7 @@ export const chatWithDocument = async (req,res)=>{
             userId,
             documentId,
             role : "user",
-            message : answer
+            message : message
             },
             {
                 userId,
