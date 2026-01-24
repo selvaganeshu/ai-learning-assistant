@@ -8,6 +8,7 @@ import quizRoutes from "./routes/quizRoutes.js";
 import quizAttemptRoutes from "./routes/quizAttemptRoutes.js";
 import protect from "./middleware/authMiddleware.js";
 import chatRoutes from "./routes/chatRoutes.js";
+import activityRoutes from "./routes/activityRoutes.js";
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.use("/api/flashcards",flashcardRoutes);
 app.use("/api/quizzes",quizRoutes);
 app.use("/api/quiz-attempts",quizAttemptRoutes);
 app.use("/api/chat",chatRoutes);
+app.use("/api/activity",activityRoutes);
 
 app.get("/api/protected", protect, (req, res) => {
   res.json({
