@@ -9,12 +9,12 @@ export const getUserActivity = async (req, res) => {
         const quizAttempts = await QuizAttempt.find({userId})
         .sort({createdAt : -1})
         .limit(3)
-        .select("score totalQuestions createdAt");
+        .select("score totalQuestions createdAt documentId");
 
         const documents = await Document.find({userId})
         .sort({createdAt : -1})
         .limit(3)
-        .select("title createdAt");
+        .select("title createdAt documentId");
 
         const chats = await Chat.find({userId , role : "user"})
         .sort({createdAt : -1})
@@ -25,18 +25,21 @@ export const getUserActivity = async (req, res) => {
             ...documents.map((d)=>(
                 {
                     type : 'document',
+                    documentId : d._id,
                     text : `uploaded document ${d.title}`,
                     createdAt : d.createdAt
                 }
             )),
             ...quizAttempts.map((q)=>({
                 type : 'quiz',
+                documentId: q.documentId,
                 text : `Scored ${q.score} out of ${q.totalQuestions} in quiz `,
                 createdAt : q.createdAt
             })),
             ...chats.map((c)=>(
                 {
                     type : 'chat',
+                    documentId : c.documentId?._id,
                     text : `Asked a question in document ${c.documentId?.title || 'Unknow Document'}`,
                     createdAt : c.createdAt
                 }

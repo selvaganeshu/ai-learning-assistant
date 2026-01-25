@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import { getRecentActivities } from "../services/activityServices.js";
 import { getBestScore,getQuizProgress} from "../services/quizAttemptServices.js";
 import {LineChart,Line,XAxis,YAxis,Tooltip,ResponsiveContainer} from "recharts";
+import {useNavigate} from "react-router-dom";
 import toast from "react-hot-toast";
 
 const Dashboard = () => {
@@ -13,6 +14,7 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [activity,setActivity] = useState([]);
   const [progress,setProgress] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchDashboard = async () => {
@@ -106,7 +108,17 @@ const Dashboard = () => {
         ) : (
           <ul className="space-y-3">
             {activity.map((act,index)=>(
-              <li className="flex justify-between items-center text-sm"
+              <li className="flex justify-between items-center text-sm cursor-pointer hover:bg-slate-100 p-2 rounded"
+              onClick = {()=> {
+                if(act.type === 'document'){
+                  navigate(`/documents`);
+                }else if(act.type === 'quiz'){
+                  navigate(`/documents/${act.documentId}/quiz-history`);
+                }
+                else{
+                  navigate(`/documents/${act.documentId}/chat`);
+                }
+              }}
               key={index}>
                 <span>{act.text}</span>
                 <span>{new Date(act.createdAt).toLocaleString()}</span>
