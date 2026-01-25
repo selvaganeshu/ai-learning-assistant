@@ -25,7 +25,7 @@ export const getUserActivity = async (req, res) => {
             )),
             ...quizAttempts.map((q)=>({
                 type : 'quiz',
-                text : `Scored ${q.score} out of ${q.totalQuestions} in quiz ${q.title}`,
+                text : `Scored ${q.score} out of ${q.totalQuestions} in quiz `,
                 createdAt : q.createdAt
             }))
         ].sort((a,b)=> new Date(b.createdAt) - new Date(a.createdAt));
