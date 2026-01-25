@@ -1,5 +1,6 @@
 import QuizAttempt from '../models/QuizAttempt.js';
 import Document from "../models/Document.js";
+import Chat from "../models/Chat.js";
 
 export const getUserActivity = async (req, res) => {
     try{
@@ -15,6 +16,11 @@ export const getUserActivity = async (req, res) => {
         .limit(3)
         .select("title createdAt");
 
+        const chats = await Chat.find({userId , role : "user"})
+        .sort({createdAt : -1})
+        .limit(3)
+        .populate('documentId','title')
+
         const activity = [
             ...documents.map((d)=>(
                 {
@@ -27,9 +33,15 @@ export const getUserActivity = async (req, res) => {
                 type : 'quiz',
                 text : `Scored ${q.score} out of ${q.totalQuestions} in quiz `,
                 createdAt : q.createdAt
-            }))
+            })),
+            ...chats.map((c)=>(
+                {
+                    type : 'chat',
+                    text : `Asked a question in document ${c.documentId?.title || 'Unknow Document'}`,
+                    createdAt : c.createdAt
+                }
+            ))
         ].sort((a,b)=> new Date(b.createdAt) - new Date(a.createdAt));
-
 
         res.status(200).json({
             success : true,
@@ -41,6 +53,6 @@ export const getUserActivity = async (req, res) => {
         res.status(500).json({
             success : false,
              message: 'Internal server error' 
-            });
+        });
     }
 }

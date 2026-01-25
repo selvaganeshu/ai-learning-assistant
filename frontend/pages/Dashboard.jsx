@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getDashboardData } from "../services/authServices.js";
 import { useAuth } from "../context/AuthContext";
+import { getRecentActivities } from "../services/activityServices.js";
 import { getBestScore,getQuizProgress} from "../services/quizAttemptServices.js";
 import {LineChart,Line,XAxis,YAxis,Tooltip,ResponsiveContainer} from "recharts";
 import toast from "react-hot-toast";
@@ -10,19 +11,22 @@ const Dashboard = () => {
   const [bestScore,setBestScore] = useState(null);
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [activity,setActivity] = useState([]);
   const [progress,setProgress] = useState([]);
 
   useEffect(() => {
     const fetchDashboard = async () => {
       try {
-        const [statsRes, bestScoreRes,progressRes] = await Promise.all([
+        const [statsRes, bestScoreRes,progressRes,activityRes] = await Promise.all([
           getDashboardData(),
           getBestScore(),
-          getQuizProgress()
+          getQuizProgress(),
+          getRecentActivities()
         ]);
         setStats(statsRes.data);
         setBestScore(bestScoreRes.data);
         setProgress(progressRes.data);
+        setActivity(activityRes.data);
       } catch (error) {
         toast.error("Failed to load dashboard data");
       } finally {
@@ -42,7 +46,6 @@ const Dashboard = () => {
         Welcome, <span className="font-semibold">{user?.username}</span>
       </p>
 
-      {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <StatCard title="Total Documents" value={stats.documentCount} />
         <StatCard title="Total Flashcards" value={stats.flashCardCount} />
@@ -96,12 +99,21 @@ const Dashboard = () => {
         )}
       </div>
 
-      {/* Placeholder for recent activity / chat */}
       <div className="bg-white p-6 rounded-xl shadow">
         <h2 className="text-lg font-semibold mb-3">Recent Activity</h2>
-        <p className="text-slate-500">
-          Activity tracking will appear here soon.
-        </p>
+        {activity.length === 0 ? (
+          <p className="text-slate-500">No Recent activity yet.</p>
+        ) : (
+          <ul className="space-y-3">
+            {activity.map((act,index)=>(
+              <li className="flex justify-between items-center text-sm"
+              key={index}>
+                <span>{act.text}</span>
+                <span>{new Date(act.createdAt).toLocaleString()}</span>
+              </li>
+            ))}
+          </ul>
+        )} 
       </div>
     </div>
   );
