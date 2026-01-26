@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import AppLayout from "../layouts/AppLayout.jsx";
 import { getDashboardData } from "../services/authServices.js";
 import { useAuth } from "../context/AuthContext";
 import { getRecentActivities } from "../services/activityServices.js";
@@ -42,7 +43,8 @@ const Dashboard = () => {
   if (loading) return <p className="p-6">Loading dashboard...</p>;
 
   return (
-    <div className="min-h-screen bg-slate-100 p-6">
+    <AppLayout>
+      <div className="min-h-screen bg-slate-100 p-6">
       <h1 className="text-2xl font-bold mb-1">Dashboard</h1>
       <p className="text-slate-600 mb-6">
         Welcome, <span className="font-semibold">{user?.username}</span>
@@ -128,6 +130,7 @@ const Dashboard = () => {
         )} 
       </div>
     </div>
+    </AppLayout>
   );
 };
 
