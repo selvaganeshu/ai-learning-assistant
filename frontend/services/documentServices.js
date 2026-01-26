@@ -16,3 +16,13 @@ export const downloadDocument = async(documentId)=>{
   });
   return response.data;
 }
+
+export const uploadDocuments = async (formData) =>{
+  const response = await api.post("/documents",formData,{
+    headers : {
+      "Content-Type" : "multipart/form-data"  
+    }
+  });
+
+  return response.data;
+}

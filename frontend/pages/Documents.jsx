@@ -55,8 +55,8 @@ const Documents = () => {
           </div>
 
           <button
-            onClick={() => navigate("/dashboard")}
-            className="px-4 py-2 bg-emerald-500 hover:bg-emerald-600
+            onClick={() => navigate("/upload")}
+            className="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 cursor-pointer
             text-white rounded-lg transition"
           >
             + Upload Document

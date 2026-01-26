@@ -5,10 +5,12 @@ import Dashboard from "../pages/Dashboard";
 import Register from "../pages/Register";
 import ProtectedRoutes from "../components/ProtectedRoutes";
 import Documents from "../pages/Documents";
+import UploadDocument from "../pages/UploadDocument";
 import Flashcards from "../pages/Flashcard";
 import Quiz from "../pages/Quiz";
 import QuizHistory from "../pages/QuizHistory";
 import Chat from "../pages/Chat";
+
 
 function App() {
   return(
@@ -30,6 +32,14 @@ function App() {
       element = {
         <ProtectedRoutes>
           <Dashboard/>
+        </ProtectedRoutes>
+      }
+      />
+      <Route 
+      path="/upload"
+      element = {
+        <ProtectedRoutes>
+          <UploadDocument/>
         </ProtectedRoutes>
       }
       />
