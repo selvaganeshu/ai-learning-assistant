@@ -1,10 +1,11 @@
 import SideBar from "../components/SideBar";
-
+import Header from "../components/Header";
 const AppLayout = ({children})=>{
     return (
         <div >
             <SideBar/>
-            <main className="ml-64 bg-slate-100 min-h-screen">
+            <Header/>   
+            <main className="ml-64 pt-[50px] bg-slate-100 min-h-screen">
                 {children}
             </main>
         </div>

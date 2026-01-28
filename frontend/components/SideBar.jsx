@@ -1,6 +1,6 @@
 import { useNavigate,NavLink } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import {LayoutDashboard,LogOut,FileText} from "lucide-react";
+import {LayoutDashboard,LogOut,FileText,BrainCircuit} from "lucide-react";
 
 const SideBar = ()=>{
     const {logout} = useAuth();
@@ -10,7 +10,7 @@ const SideBar = ()=>{
         <aside className="w-64 bg-white border-r fixed top-0 left-0 min-h-screen p-4 flex flex-col ">
             <div className="flex items-center gap-2 mb-8">
                 <div className="w-9 h-9 bg-emerald-500 rounded-lg flex items-center justify-center text-white font-bold">
-                    AI
+                    <BrainCircuit size={20}/>
                 </div>
                 <h1 className="font-semibold text-lg">AI Learning Assistant</h1>
             </div>
