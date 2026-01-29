@@ -5,6 +5,7 @@ import Input from "../components/Input";
 import Button from "../components/Button";
 import AuthLayout from "../layouts/AuthLayout";
 import { login } from "../services/authServices.js";
+import {Mail,Lock} from "lucide-react";
 import { useAuth } from "../context/AuthContext.jsx";
 
 const Login = () => {
@@ -38,18 +39,33 @@ const Login = () => {
 
   return (
     <AuthLayout>
-      <h2 className="text-2xl font-bold text-center mb-6">
-        Login
+
+      
+      <h2 className="text-2xl font-bold text-center">
+        Welcome Back
       </h2>
-
+      <p className="text-m text-slate-500 text-center mb-6">
+        Sign in to continue to your journey
+      </p>
       <form className="space-y-4" onSubmit={handleSubmit}>
-        <Input label="Email" name="email" onChange={handleChange} />
-        <Input label="Password" type="password" name="password" onChange={handleChange} />
+        <Input label="Email" name="email" placeholder="you@example.com" icon = {<Mail size={16}/>} onChange={handleChange} />
+        <Input label="Password" type="password" name="password" placeholder="••••••••" icon = {<Lock size={16}/>} onChange={handleChange} />
 
-        <Button disabled={loading}>
+        <Button disabled={loading} >
           {loading ? "Logging in..." : "Login"}
         </Button>
       </form>
+
+      <p className="text-sm text-center text-slate-500">
+        Don't have an account?{" "}
+        <span 
+        onClick={()=> navigate('/register')}
+        className="text-emerald-600 cursor-pointer hover:underline">Sign Up</span>
+      </p>
+
+      <p className="text-xs text-center text-slate-400 mt-3">
+        By continuing, you agree to our Terms & Privacy Policy
+      </p>
     </AuthLayout>
   );
 };

@@ -3,6 +3,7 @@ import { useAuth } from "../context/AuthContext";
 
 const Header = () => {
   const { user } = useAuth();
+  
 
   return (
     <header
@@ -16,11 +17,9 @@ const Header = () => {
     >
      
       <div className="flex items-center gap-3">
-        
           <div className="w-9 h-9 rounded-full bg-emerald-500 flex items-center justify-center">
             <User size={18} className="text-emerald-100" />
           </div>
-
           <div className="leading-tight">
             <p className="text-m font-semibold text-slate-800">
               {user?.userName || "User"}
@@ -29,7 +28,6 @@ const Header = () => {
               {user?.email}
             </p>
           </div>
-        
       </div>
     </header>
   );

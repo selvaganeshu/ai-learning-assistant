@@ -42,7 +42,6 @@ const Register = () => {
       <h2 className="text-2xl font-bold text-center mb-6">
         Create Account
       </h2>
-
       <form className="space-y-4" onSubmit={handleSubmit}>
         <Input label="Username" name="userName" onChange={handleChange} />
         <Input label="Email" type="email" name="email" onChange={handleChange} />
