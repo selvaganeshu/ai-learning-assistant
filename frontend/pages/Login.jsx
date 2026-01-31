@@ -56,7 +56,7 @@ const Login = () => {
         </Button>
       </form>
 
-      <p className="text-sm text-center text-slate-500">
+      <p className="text-m text-center text-slate-500">
         Don't have an account?{" "}
         <span 
         onClick={()=> navigate('/register')}
